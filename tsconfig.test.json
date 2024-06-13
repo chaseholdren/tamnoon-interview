@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "types": [
+      "vite-plugin-svgr/client",
+      "vite/client",
+      "@emotion/react/types/css-prop",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
+  },
+  "include": [
+    "src/**/*.test.{ts,tsx}",
+    ".vitest/**/*.ts"
+  ]
+}

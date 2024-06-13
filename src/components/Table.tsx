@@ -1,4 +1,5 @@
 import React from 'react';
+import { css } from '@emotion/react';
 
 export interface ColumnDefinition<Row> {
   header: string;
@@ -8,6 +9,7 @@ export interface ColumnDefinition<Row> {
 export interface Props<Row> {
   columns: ColumnDefinition<Row>[];
   data: Row[];
+  getRowKey: (row: Row) => string;
   rowKeyAccessor: keyof Row;
 }
 
@@ -18,7 +20,14 @@ export function Table<Row>(props: Props<Row>) {
   }
 
   return (
-    <table>
+    <table
+      css={css({
+        tableLayout: 'fixed',
+        width: '100%',
+        // borderCollapse: 'collapse',
+        // borderSpacing: 0,
+      })}
+    >
       <thead>
         <tr>
           {columns.map((column) => (
@@ -27,14 +36,28 @@ export function Table<Row>(props: Props<Row>) {
         </tr>
       </thead>
       <tbody>
-        {data.map((row) => (
-          <tr key={row[rowKeyAccessor]}>
-            {columns.map((column) => {
-              const cellContents = column.getCellContents(row);
-              return <td key={column.header}>{cellContents}</td>;
-            })}
-          </tr>
-        ))}
+        {data.map((row) => {
+          return (
+            <tr key={row[rowKeyAccessor]}>
+              {columns.map((column) => {
+                const cellContents = column.getCellContents(row);
+                return (
+                  <td
+                    css={css({
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                    })}
+                    title={typeof cellContents === 'string' ? cellContents : ''}
+                    key={column.header}
+                  >
+                    {cellContents}
+                  </td>
+                );
+              })}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

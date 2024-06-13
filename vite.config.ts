@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
@@ -19,4 +20,11 @@ export default defineConfig({
       },
     }),
   ],
+  test: {
+    globals: true,
+    setupFiles: '.vitest/setup',
+    include: ['**/*.test.{ts,tsx}'],
+    environment: 'happy-dom',
+    css: false,
+  },
 });
