@@ -6,17 +6,9 @@ import { columnDefinitions } from './columnDefinitions';
 import { css } from '@emotion/react';
 
 const filterContainerCss = css({
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  marginBottom: 20,
+  textAlign: 'left',
+  marginBottom: 28,
   '& label': {
-    marginRight: 14,
-  },
-  '& select': {
-    marginRight: 14,
-  },
-  '& input': {
     marginRight: 14,
   },
 });
@@ -35,8 +27,6 @@ const filterContainerCss = css({
 //       throw new Error();
 //   }
 // }
-
-// const createdDateFilterCheck
 
 const AssetsPage: React.FC = () => {
   const [assets, setAssets] = React.useState(initialAssets);
@@ -84,7 +74,7 @@ const AssetsPage: React.FC = () => {
     <React.Fragment>
       <div css={filterContainerCss}>
         <DateRangePicker
-          label="Created Date Range:"
+          label="Creation Date"
           startDate={startDateFilter}
           endDate={endDateFilter}
           onChangeStartDate={setStartDateFilter}
@@ -101,7 +91,7 @@ const AssetsPage: React.FC = () => {
               setAssetTypeFilter(e.target.value);
             }}
           >
-            <option value="">--No selection--</option>
+            <option value=""></option>
             {assets.map((asset) => (
               <option key={asset.id} value={asset.assetType}>
                 {asset.assetType}
@@ -120,8 +110,12 @@ const AssetsPage: React.FC = () => {
           />
         </div>
       </div>
-      <Table columns={columnDefinitions} rowKeyAccessor="id" data={sortedAssets} />
-      Count: {sortedAssets.length}
+      <Table
+        columns={columnDefinitions}
+        rowKeyAccessor="id"
+        getRowKey={(row) => row.id}
+        data={sortedAssets}
+      />
     </React.Fragment>
   );
 };

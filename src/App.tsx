@@ -1,4 +1,3 @@
-import './App.css';
 import AssetsPage from './pages/AssetsPage';
 
 function App() {
