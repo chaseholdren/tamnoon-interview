@@ -1,10 +1,10 @@
 import './App.css';
-import AssetsTable from './assets-table/AssetsTable';
+import AssetsPage from './pages/AssetsPage';
 
 function App() {
   return (
     <>
-      <AssetsTable />
+      <AssetsPage />
     </>
   );
 }

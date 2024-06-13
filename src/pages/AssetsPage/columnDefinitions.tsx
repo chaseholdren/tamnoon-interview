@@ -1,9 +1,9 @@
-import { Asset } from './assets';
-import { ColumnDefinition } from '../components/Table';
-import GrayJewel from '@/icons/gray-jewel.svg?react';
-import RedJewel from '@/icons/red-jewel.svg?react';
-import GreenJewel from '@/icons/green-jewel.svg?react';
-import BlueJewel from '@/icons/blue-jewel.svg?react';
+import { Asset } from './tableData';
+import { ColumnDefinition } from '@/components/Table';
+import GrayJewel from '@/static/icons/gray-jewel.svg?react';
+import RedJewel from '@/static/icons/red-jewel.svg?react';
+import GreenJewel from '@/static/icons/green-jewel.svg?react';
+import BlueJewel from '@/static/icons/blue-jewel.svg?react';
 
 export const columnDefinitions: ColumnDefinition<Asset>[] = [
   {
@@ -29,13 +29,13 @@ export const columnDefinitions: ColumnDefinition<Asset>[] = [
   {
     header: 'Is Crown Jewel',
     getCellContents: (row) => {
-      let JewelComponent;
+      let JewelComponent: React.ReactNode;
       if (row.crownJewelIndicator === 'OVERRIDE') {
-        JewelComponent = row.isCrownJewel ? RedJewel : BlueJewel;
+        JewelComponent = row.isCrownJewel ? <RedJewel /> : <BlueJewel />;
       } else {
-        JewelComponent = row.isCrownJewel ? GreenJewel : GrayJewel;
+        JewelComponent = row.isCrownJewel ? <GreenJewel /> : <GrayJewel />;
       }
-      return <JewelComponent />;
+      return JewelComponent;
     },
   },
   {
