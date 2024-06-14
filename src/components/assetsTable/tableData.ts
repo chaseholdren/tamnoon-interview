@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import rawAssets from './assetsData.json';
 
 type RawAsset = (typeof rawAssets)[number];
@@ -58,3 +57,12 @@ export const mapRawAsset = (asset: RawAsset): Asset & RawAsset => ({
 });
 
 export const assets = rawAssets.map(mapRawAsset);
+
+if (import.meta.vitest) {
+  const { expect, it } = import.meta.vitest;
+
+  it('mapRawAsset', () => {
+    const result = rawAssets.map(mapRawAsset);
+    expect(result).toMatchFileSnapshot('./__snapshots__/mapRawAsset.json');
+  });
+}

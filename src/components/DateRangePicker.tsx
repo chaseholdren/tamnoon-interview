@@ -1,4 +1,3 @@
-import React from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import { css } from '@emotion/react';
@@ -28,14 +27,6 @@ export const DateRangePicker = (props: DateRangePickerProps) => {
   const endValue = value[1];
 
   const { start: startLabel = '', end: endLabel = '' } = labels;
-
-  const id = React.useId();
-
-  // const onAcceptStart = (acceptedValue: dayjs.ConfigType) => {
-  //   onAccept([acceptedValue, endValue]);
-  // };
-
-  // const handleAcceptStart = onAccept ? onAcceptStart : undefined;
 
   return (
     <div
