@@ -20,10 +20,14 @@ export default defineConfig({
       },
     }),
   ],
+  define: {
+    'import.meta.vitest': 'undefined',
+  },
   test: {
     globals: true,
     setupFiles: '.vitest/setup',
     include: ['**/*.test.{ts,tsx}'],
+    includeSource: ['src/**/*.{ts,tsx}'],
     environment: 'happy-dom',
     css: false,
   },

@@ -1,16 +1,13 @@
 import React from 'react';
-import { assets as initialAssets, getJewelColor } from './tableData';
+import { assets, getJewelColor } from './tableData';
 import { DateRangePicker, DateRangeValue } from '@components/DateRangePicker';
 import {
   DataGrid,
   GridColDef,
   GridRenderCellParams,
   GridRenderEditCellParams,
-  GridRowParams,
   useGridApiContext,
-  GridActionsCellItem,
 } from '@mui/x-data-grid';
-import { css } from '@emotion/react';
 import { BlueJewelIcon } from '@icons/BlueJewelIcon';
 import { RedJewelIcon } from '@icons/RedJewelIcon';
 import { GreenJewelIcon } from '@icons/GreenJewelIcon';
@@ -35,27 +32,6 @@ import EditIcon from '@mui/icons-material/Edit';
 dayjs.extend(minMax);
 dayjs.extend(isBetween);
 
-// const initialState = {};
-
-// type ACTIONTYPE = { type: 'increment'; payload: number } | { type: 'decrement'; payload: string };
-
-// function reducer(state: typeof initialState, action: ACTIONTYPE) {
-//   switch (action.type) {
-//     case 'setStartDate':
-//       return { count: state.count + action.payload };
-//     case 'decrement':
-//       return { count: state.count - Number(action.payload) };
-//     default:
-//       throw new Error();
-//   }
-// }
-
-// const FiltersPaper = styled(Paper)(({ theme }) => ({
-//   width: 120,
-//   height: 120,
-//   padding: theme.spacing(2),
-// }));
-
 function IsCrownJewelEditCell(props: GridRenderEditCellParams) {
   const { id, row, field } = props;
   const { isCrownJewel } = row;
@@ -63,7 +39,7 @@ function IsCrownJewelEditCell(props: GridRenderEditCellParams) {
   const apiRef = useGridApiContext();
 
   const handleValueChange = (event: SelectChangeEvent) => {
-    const newValue = event.target.value === 'true'; // The new value entered by the user
+    const newValue = event.target.value === 'true';
 
     apiRef.current.setEditCellValue({ id, field, value: newValue });
   };
@@ -76,10 +52,10 @@ function IsCrownJewelEditCell(props: GridRenderEditCellParams) {
   );
 }
 
-const createdValues = initialAssets.map((asset) => dayjs(asset.created));
+const createdValues = assets.map((asset) => dayjs(asset.created));
 const minDate = dayjs.min(createdValues);
 const maxDate = dayjs.max(createdValues);
-const assetTypes = Array.from(new Set(initialAssets.map((asset) => asset.assetType)));
+const assetTypes = Array.from(new Set(assets.map((asset) => asset.assetType)));
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'id' },
@@ -147,26 +123,10 @@ const columns: GridColDef[] = [
       );
     },
   },
-  // {
-  //   field: 'actions',
-  //   type: 'actions',
-
-  //   getActions: (params: GridRowParams) => [
-  //     <GridActionsCellItem
-  //       icon={<EditIcon />}
-  //       onClick={() => {
-  //         console.log('edit click', params);
-  //       }}
-  //       label="Edit"
-  //     />,
-  //   ],
-  // },
   { field: 'tagString', headerName: 'Tags' },
 ];
 
 export const AssetsTable: React.FC = () => {
-  const [assets, setAssets] = React.useState(initialAssets);
-
   const [createdDateFilter, setCreatedDateFilter] = React.useState<DateRangeValue>([
     minDate,
     maxDate,

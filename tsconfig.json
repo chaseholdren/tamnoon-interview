@@ -13,6 +13,7 @@
       "vite-plugin-svgr/client",
       "vite/client",
       "@emotion/react/types/css-prop",
+      "vitest/importMeta"
     ],
     "paths": {
       "@components/*": [
