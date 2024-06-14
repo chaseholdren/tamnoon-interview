@@ -1,4 +1,5 @@
-import rawAssets from '@/static/data/assets-data.json';
+import dayjs from 'dayjs';
+import rawAssets from './assetsData.json';
 
 type RawAsset = (typeof rawAssets)[number];
 
@@ -8,9 +9,6 @@ export interface Asset {
   id: string;
   name: string;
   ownerName: string;
-  createdString: string;
-  createdDate: Date;
-  criticality: number | null;
   assetType: string;
   env: string;
   isCrownJewel: boolean;
@@ -44,17 +42,11 @@ export const getTagString = (tags: RawAsset['tags']): string => {
   return Object.values(tagObject).join(', ');
 };
 
-export const mapRawAsset = (asset: RawAsset): Asset => ({
+export const mapRawAsset = (asset: RawAsset): Asset & RawAsset => ({
+  ...asset.enrich,
+  ...asset,
   id: asset._id,
-  name: asset.name,
   ownerName: getOwnerName(asset.owner),
-  createdString: convertDateTimeFormat(asset.created),
-  createdDate: new Date(asset.created),
-  criticality: asset.criticalityFactor,
-  assetType: asset.type,
-  env: asset.enrich.env,
-  isCrownJewel: asset.enrich.isCrownJewel,
-  crownJewelIndicator: asset.enrich.crownJewelIndicator,
   tagString: getTagString(asset.tags),
 });
 
