@@ -42,6 +42,13 @@ export const getTagString = (tags: RawAsset['tags']): string => {
   return Object.values(tagObject).join(', ');
 };
 
+export const getJewelColor = (isCrownJewel: boolean, crownJewelIndicator: string) => {
+  if (crownJewelIndicator === 'OVERRIDE') {
+    return isCrownJewel ? 'red' : 'blue';
+  }
+  return isCrownJewel ? 'green' : 'gray';
+};
+
 export const mapRawAsset = (asset: RawAsset): Asset & RawAsset => ({
   ...asset.enrich,
   ...asset,
