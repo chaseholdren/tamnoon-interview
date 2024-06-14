@@ -1,7 +1,15 @@
 import React from 'react';
-import { assets as initialAssets } from './tableData';
+import { assets as initialAssets, getJewelColor } from './tableData';
 import { DateRangePicker, DateRangeValue } from '@components/DateRangePicker';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridRenderCellParams,
+  GridRenderEditCellParams,
+  GridRowParams,
+  useGridApiContext,
+  GridActionsCellItem,
+} from '@mui/x-data-grid';
 import { css } from '@emotion/react';
 import { BlueJewelIcon } from '@icons/BlueJewelIcon';
 import { RedJewelIcon } from '@icons/RedJewelIcon';
@@ -9,8 +17,20 @@ import { GreenJewelIcon } from '@icons/GreenJewelIcon';
 import { GrayJewelIcon } from '@icons/GrayJewelIcon';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { Paper, Typography, Grid, TextField, MenuItem, Button } from '@mui/material';
+import {
+  Paper,
+  Typography,
+  Grid,
+  TextField,
+  MenuItem,
+  Button,
+  Select,
+  SelectChangeEvent,
+  IconButton,
+  Box,
+} from '@mui/material';
 import minMax from 'dayjs/plugin/minMax';
+import EditIcon from '@mui/icons-material/Edit';
 
 dayjs.extend(minMax);
 dayjs.extend(isBetween);
@@ -35,6 +55,26 @@ dayjs.extend(isBetween);
 //   height: 120,
 //   padding: theme.spacing(2),
 // }));
+
+function IsCrownJewelEditCell(props: GridRenderEditCellParams) {
+  const { id, row, field } = props;
+  const { isCrownJewel } = row;
+
+  const apiRef = useGridApiContext();
+
+  const handleValueChange = (event: SelectChangeEvent) => {
+    const newValue = event.target.value === 'true'; // The new value entered by the user
+
+    apiRef.current.setEditCellValue({ id, field, value: newValue });
+  };
+
+  return (
+    <Select value={isCrownJewel} onChange={handleValueChange}>
+      <MenuItem value={'true'}>true</MenuItem>
+      <MenuItem value={'false'}>false</MenuItem>
+    </Select>
+  );
+}
 
 const createdValues = initialAssets.map((asset) => dayjs(asset.created));
 const minDate = dayjs.min(createdValues);
@@ -61,25 +101,66 @@ const columns: GridColDef[] = [
   {
     field: 'isCrownJewel',
     headerName: 'Is Crown Jewel',
+    type: 'string',
     flex: 1,
     editable: true,
-    valueGetter: (_, row) => {
-      if (row.crownJewelIndicator === 'OVERRIDE') {
-        return row.isCrownJewel ? 'red' : 'blue';
-      }
-      return row.isCrownJewel ? 'green' : 'gray';
+    renderEditCell: (params: GridRenderEditCellParams) => {
+      return <IsCrownJewelEditCell {...params} />;
     },
-    type: 'string',
+    valueGetter: (_, row) => {
+      return getJewelColor(row.isCrownJewel, row.crownJewelIndicator);
+    },
+    valueSetter: (value, row) => {
+      const newRow = { ...row };
+      if (typeof value === 'string') {
+        newRow.isCrownJewel = value === 'green' || value === 'red';
+      } else if (typeof value === 'boolean') {
+        newRow.isCrownJewel = value;
+      }
+      return newRow;
+    },
     renderCell: (params: GridRenderCellParams<any, string>) => {
+      console.log('renderCell', params);
       if (typeof params.value === 'undefined') return '';
-      return {
-        blue: <BlueJewelIcon />,
-        red: <RedJewelIcon />,
-        green: <GreenJewelIcon />,
-        gray: <GrayJewelIcon />,
-      }[params.value];
+      return (
+        <Box display="flex" alignItems="center" justifyContent={'space-evenly'}>
+          {
+            {
+              blue: <BlueJewelIcon fontSize="large" />,
+              red: <RedJewelIcon fontSize="large" />,
+              green: <GreenJewelIcon fontSize="large" />,
+              gray: <GrayJewelIcon fontSize="large" />,
+            }[params.value]
+          }
+          <IconButton
+            aria-label="edit 'Is Crown Jewel'"
+            onClick={() => {
+              params.api.startCellEditMode({
+                id: params.id,
+                field: 'isCrownJewel',
+              });
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+        </Box>
+      );
     },
   },
+  // {
+  //   field: 'actions',
+  //   type: 'actions',
+
+  //   getActions: (params: GridRowParams) => [
+  //     <GridActionsCellItem
+  //       icon={<EditIcon />}
+  //       onClick={() => {
+  //         console.log('edit click', params);
+  //       }}
+  //       label="Edit"
+  //     />,
+  //   ],
+  // },
   { field: 'tagString', headerName: 'Tags' },
 ];
 
